@@ -1,6 +1,6 @@
 import * as Rx from "rxjs/Rx";
 
-export interface CanvasMouseInput {
+export interface MouseInput {
 	type: string;
 	button: number;
 	pos: { x: number, y: number };
@@ -45,7 +45,7 @@ export const mouse = (elem: HTMLElement) => {
 	};
 
 	const mouseExt = Rx.Observable.merge(mouseDown, mouseUp, mouseMove/*, mouseWheel*/)
-		.map((evt): CanvasMouseInput => {
+		.map((evt): MouseInput => {
 			if (evt.type === "down") {
 				mouseState[evt.value] = {pressed: true};
 				return {type: "press", button: evt.value, pos: evt.pos};

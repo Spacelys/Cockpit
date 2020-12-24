@@ -1,6 +1,6 @@
 import * as Rx from "rxjs/Rx";
 
-export interface CanvasKeyInput {
+export interface KeyInput {
 	key: string;
 	dt: number;
 	held: number;
@@ -41,7 +41,7 @@ export const keys = (elem: Document, {updateTime = 30} = {}) => {
         });
 
     const keysHeld = new Set<string>();
-    return keyExt.map((keyEvent): CanvasKeyInput => {
+    return keyExt.map((keyEvent): KeyInput => {
         if (keyEvent.event === "press") {
             keysHeld.add(keyEvent.key);
         } else if (keyEvent.event === "release") {
