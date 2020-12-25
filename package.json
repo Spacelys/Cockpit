@@ -1,8 +1,9 @@
 {
   "name": "@spacelys/cockpit",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Library for inputs for web based clients",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types" : "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
