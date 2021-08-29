@@ -1,6 +1,6 @@
 {
   "name": "@spacelys/cockpit",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Library for inputs for web based clients",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -8,7 +8,8 @@
     "build": "tsc",
 	"lint": "echo \"lint skipped\"",
     "examples": "parcel examples/index.html",
-    "test": "echo \"Warning: no test specified\""
+    "test": "echo \"Warning: no test specified\"",
+	"coverage": "echo \"Warning: no coverage specified yet\""
   },
   "repository": {
     "type": "git",
