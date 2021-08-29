@@ -3,10 +3,12 @@
   "version": "0.0.4",
   "description": "Library for inputs for web based clients",
   "main": "dist/index.js",
-  "types" : "dist/index.d.ts",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+	"lint": "echo \"lint skipped\"",
+    "examples": "parcel examples/index.html",
+    "test": "echo \"Warning: no test specified\""
   },
   "repository": {
     "type": "git",
@@ -23,6 +25,8 @@
     "rxjs-compat": "6.6.3"
   },
   "devDependencies": {
+    "parcel-bundler": "1.12.5",
+    "sass": "1.32.12",
     "typescript": "4.1.3"
   }
 }

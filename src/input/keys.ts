@@ -23,7 +23,8 @@ export const keys = (elem: Document, {updateTime = 30} = {}) => {
             return Rx.Observable.of({key: eventKey, dt: 0, held: 0, event: "press"})
                 .concat(
                     Rx.Observable.interval(updateTime)
-                        .timeInterval().map(t => t.interval/1000.0)
+                        .timeInterval()
+						.map(t => t.interval/1000.0)
                         .map(dt => ({key: eventKey, dt: dt, held: dt, event: "held"}) )
                         .scan((acc, val) => {
                             return {key: val.key, dt: val.dt, held: acc.held + val.dt, event: "held"};

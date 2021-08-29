@@ -1,0 +1,32 @@
+<html>
+<body>
+	<h1>GamePad Testing</h1>
+	<pre>If multiple gamepads are connected, click the button to switch, defaults to the first gamepad</pre>
+	<div id='available-gamepads'>
+	</div>
+	<div id="currently-connected">
+		<B><pre id="connected-gamepad">connected: ...initializing</pre></B>
+		<B><pre id="connected-mapping">mapping: default</pre></B>
+		<button id='mapping-default'>default mapping</button>
+		<button id='mapping-8bitdo'>8bitdo mapping</button>
+	</div>
+	<hr/>
+	<pre> Press a button on your gamepad to start grabbing the input state of that button</pre>
+	<div id='all-inputs'>
+		<div class='header'>
+			<h3>Buttons</h3>
+			<div id='buttons'></div>
+		</div>
+		<div class='header'>
+			<h3>Dpad</h3>
+			<div id='dpad'></div>
+			</div>
+		<div class='header'>
+			<h3>Joystick</h3>
+			<div id='axes'></div>	
+		</div>
+	</div>
+	<link rel="stylesheet" href="./styles.scss">
+  <script src="./index.ts"></script>
+</body>
+</html>
