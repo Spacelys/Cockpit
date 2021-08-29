@@ -1,0 +1,54 @@
+#all-inputs {
+	display: flex;
+	flex-direction: row;
+	div.header {
+		width: 120px;
+	}
+}
+
+button {
+	margin: 4px;
+}
+
+line {
+	stroke-width:2px;
+	stroke:rgb(0,0,0);
+}
+
+.button-input {
+	margin: 2px;
+	width: 100px;
+	height: 40px;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	border: 1px solid black;
+
+	.gamepad-id {
+		text-align: center;
+		flex-grow: 1;
+	}
+	.direction {
+		width: 50px;
+		height: 40px;
+		flex-grow: 1;
+	}
+	.joypad {
+		width: 50px;
+		height: 40px;
+		flex-grow: 1;
+	}
+
+	.pressed {
+		width: 50px;
+		height: 40px;
+		&.on {
+			background: red;
+		}
+		&.off {
+			background: none;
+		}
+		flex-grow: 1;
+	}
+}

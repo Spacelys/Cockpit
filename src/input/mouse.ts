@@ -1,7 +1,7 @@
 import * as Rx from "rxjs/Rx";
 
 export interface MouseInput {
-	type: string;
+	type: "press" | "drag" | "release";
 	button: number;
 	pos: { x: number, y: number };
 }
@@ -60,5 +60,5 @@ export const mouse = (elem: HTMLElement) => {
 		})
 		.filter(evt => !!evt);
 
-    return mouseExt;
+	return mouseExt;
 };
