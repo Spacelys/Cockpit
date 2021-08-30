@@ -1,4 +1,4 @@
-import * as cockpit from '../src';
+import * as cockpit from '../../src';
 
 /*
 	<div id='buttons'></div>
