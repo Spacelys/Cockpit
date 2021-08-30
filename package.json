@@ -1,6 +1,6 @@
 {
   "name": "@spacelys/cockpit",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Library for inputs for web based clients",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
