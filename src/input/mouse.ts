@@ -14,6 +14,27 @@ const supportedButons = [
 	16 // aux button
 ];
 
+/* Map the button value found in MouseEvent.button to the supportedButtons values above
+ *
+ */
+const mapButton = (button: number) => {
+	switch(button) {
+		case 0:
+			return 1;
+		case 1:
+			return 4
+		case 2:
+			return 2;
+		case 3:
+			return 8;
+		case 4:
+			return 16;
+		default: 
+			return 0;
+	}
+};
+
+
 const buttonsPresssed = (buttons: number): Array<number> => {
 	const pressed: Array<number> = [];
 	supportedButons.forEach(button => {
@@ -39,6 +60,7 @@ export const mouse = (selector: string) => {
 	const mouseDown = Rx.Observable.fromEvent<MouseEvent>(elem, "mousedown")
 		.timeInterval()
 		.flatMap(evt => {
+			console.log('down', evt.value.button);
 			const downEvent = (button: number) => ({
 				value: button, interval: evt.interval, type: "down",
 				pos: {
@@ -79,7 +101,9 @@ export const mouse = (selector: string) => {
 				}
 			});
 
-			return buttonsReleased(evt.value.buttons).map(button => upEvent(button));
+			// return buttonsReleased(evt.value.buttons).map(button => upEvent(button));
+			console.log('Button', evt.value.button, '>', mapButton(evt.value.button));
+			return [upEvent(mapButton(evt.value.button))];
 		});
 
 	const mouseState: {[key in string]: any} = {
@@ -98,7 +122,7 @@ export const mouse = (selector: string) => {
 				return {type: "press", button: evt.value, pos: evt.pos};
 			} else if (evt.type === "move") {
 				if (evt.value !== 0) {
-					mouseState[evt.value] = {pressed: true};
+					// mouseState[evt.value] = {pressed: true};
 					return {type: "drag", button: evt.value, pos: evt.pos};
 				} else {
 					return {type: "move", button: evt.value, pos: evt.pos};
@@ -107,10 +131,8 @@ export const mouse = (selector: string) => {
 				// we will get an event for ALL potential released buttons
 				// to actually find out which one(s) have been released, we have to see which buttons
 				// had their previous state as pressed that are also in the array of potentially released buttons
-				if (mouseState[evt.value].pressed) {
-					mouseState[evt.value] = {pressed: false}; // side effects!
-					return {type: "release", button: evt.value, pos: evt.pos};
-				}
+				mouseState[evt.value] = {pressed: false}; // side effects!
+				return {type: "release", button: evt.value, pos: evt.pos};
 			}
 		})
 		.filter(evt => !!evt);
