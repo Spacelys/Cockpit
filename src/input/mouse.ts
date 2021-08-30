@@ -97,7 +97,8 @@ export const mouse = (selector: string) => {
 				mouseState[evt.value] = {pressed: true};
 				return {type: "press", button: evt.value, pos: evt.pos};
 			} else if (evt.type === "move") {
-				if (mouseState[evt.value].pressed) {
+				if (evt.value !== 0) {
+					mouseState[evt.value] = {pressed: true};
 					return {type: "drag", button: evt.value, pos: evt.pos};
 				} else {
 					return {type: "move", button: evt.value, pos: evt.pos};
