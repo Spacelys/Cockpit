@@ -28,9 +28,7 @@ keyInputs.subscribe((input: cockpit.KeyInput) => {
 import * as cockpit from '@spacelys/cockpit'
 
 // creates a mouse listener around a specific html element
-const mouseInput = cockpit.mouse(
-  document.querySelector("#elementToCaptureInputsAt") as HTMLElement
-);
+const mouseInput = cockpit.mouse("#elementToCaptureInputsAt");
 
 mouseInput.subscribe((input: cockpit.KeyInput) => {
   switch (input.type) {
