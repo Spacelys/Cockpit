@@ -1,47 +1,94 @@
 import * as Rx from "rxjs/Rx";
 
 export interface MouseInput {
-	type: "press" | "drag" | "release";
+	type: "press" | "drag" | "release" | "move";
 	button: number;
 	pos: { x: number, y: number };
 }
 
-export const mouse = (elem: HTMLElement) => {
+const supportedButons = [
+	1, // main
+	2, // secondary
+	4, // wheel
+	8, // back button
+	16 // aux button
+];
+
+const buttonsPresssed = (buttons: number): Array<number> => {
+	const pressed: Array<number> = [];
+	supportedButons.forEach(button => {
+		if (buttons & button) {
+			pressed.push(button)
+		}
+	});
+	return pressed;
+};
+
+const buttonsReleased = (buttons: number): Array<number> => {
+	const pressed: Array<number> = [];
+	supportedButons.forEach(button => {
+		if (!(buttons & button)) {
+			pressed.push(button)
+		}
+	});
+	return pressed;
+};
+
+export const mouse = (selector: string) => {
+	const elem = <HTMLElement>document.querySelector(selector);
 	const mouseDown = Rx.Observable.fromEvent<MouseEvent>(elem, "mousedown")
 		.timeInterval()
-		.map(evt => {
-			const t = {
-				value: evt.value.button, interval: evt.interval, type: "down",
+		.flatMap(evt => {
+			const downEvent = (button: number) => ({
+				value: button, interval: evt.interval, type: "down",
 				pos: {
 					x: evt.value.pageX - elem.offsetLeft,
 					y: evt.value.pageY - elem.offsetTop
 				}
-			};
-			return t;
+			});
+			return buttonsPresssed(evt.value.buttons).map(button => downEvent(button));
 		});
 
 	const mouseMove = Rx.Observable.fromEvent<MouseEvent>(elem, "mousemove")
 		.timeInterval()
-		.map(evt => ({
-			value: evt.value.button, interval: evt.interval, type: "move",
-			pos: {
-				x: evt.value.pageX - elem.offsetLeft,
-				y: evt.value.pageY - elem.offsetTop
+		.flatMap(evt => {
+			const moveEvent = (button: number) => ({
+				value: button, interval: evt.interval, type: "move",
+				pos: {
+					x: evt.value.pageX - elem.offsetLeft,
+					y: evt.value.pageY - elem.offsetTop
+				}
+			});
+			const pressedButtons = buttonsPresssed(evt.value.buttons);
+			if (pressedButtons.length > 0) {
+				return pressedButtons.map(button => moveEvent(button));
+			} else {
+				// if not buttons were pressed we will treat this as a "move" event without a button
+				return [0].map(button => moveEvent(button));
 			}
-		}));
+		});
 
 	const mouseUp = Rx.Observable.fromEvent<MouseEvent>(elem, "mouseup")
 		.timeInterval()
-		.map(evt => ({
-			value: evt.value.button, interval: evt.interval, type: "up",
-			pos: {
-				x: evt.value.pageX - elem.offsetLeft,
-				y: evt.value.pageY - elem.offsetTop
-			}
-		}));
+		.flatMap(evt => {
+			const upEvent = (button: number) => ({
+				value: button, interval: evt.interval, type: "up",
+				pos: {
+					x: evt.value.pageX - elem.offsetLeft,
+					y: evt.value.pageY - elem.offsetTop
+				}
+			});
+
+			return buttonsReleased(evt.value.buttons).map(button => upEvent(button));
+		});
 
 	const mouseState: {[key in string]: any} = {
-		"0": {}
+		"0": {},
+		"1": {},
+		"2": {},
+		"4": {},
+		"8" : {},
+		"16": {}
 	};
 
 	const mouseExt = Rx.Observable.merge(mouseDown, mouseUp, mouseMove/*, mouseWheel*/)
@@ -52,10 +99,17 @@ export const mouse = (elem: HTMLElement) => {
 			} else if (evt.type === "move") {
 				if (mouseState[evt.value].pressed) {
 					return {type: "drag", button: evt.value, pos: evt.pos};
+				} else {
+					return {type: "move", button: evt.value, pos: evt.pos};
 				}
 			} else if (evt.type === "up") {
-				mouseState[evt.value] = {pressed: false}; // side effects!
-				return {type: "release", button: evt.value, pos: evt.pos};
+				// we will get an event for ALL potential released buttons
+				// to actually find out which one(s) have been released, we have to see which buttons
+				// had their previous state as pressed that are also in the array of potentially released buttons
+				if (mouseState[evt.value].pressed) {
+					mouseState[evt.value] = {pressed: false}; // side effects!
+					return {type: "release", button: evt.value, pos: evt.pos};
+				}
 			}
 		})
 		.filter(evt => !!evt);
