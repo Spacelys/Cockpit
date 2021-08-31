@@ -161,7 +161,6 @@ const connectToGamePad = (controller: cockpit.GamePadCockpit, id: number, name: 
 	controller.connectToGamePad(id);
 
 	return (buttonMapping) => {
-		console.log('hiya');
 		if (buttonMapping === 0) {
 			document.querySelector("#connected-mapping").innerHTML = `mapping: default`;
 		} else {
