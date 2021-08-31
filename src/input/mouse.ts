@@ -60,7 +60,6 @@ export const mouse = (selector: string) => {
 	const mouseDown = Rx.Observable.fromEvent<MouseEvent>(elem, "mousedown")
 		.timeInterval()
 		.flatMap(evt => {
-			console.log('down', evt.value.button);
 			const downEvent = (button: number) => ({
 				value: button, interval: evt.interval, type: "down",
 				pos: {
@@ -101,8 +100,6 @@ export const mouse = (selector: string) => {
 				}
 			});
 
-			// return buttonsReleased(evt.value.buttons).map(button => upEvent(button));
-			console.log('Button', evt.value.button, '>', mapButton(evt.value.button));
 			return [upEvent(mapButton(evt.value.button))];
 		});
 
