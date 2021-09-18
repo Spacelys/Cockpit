@@ -159,7 +159,6 @@ export const mouse = (selector: string) => {
 		.map((evt): MouseInput | MouseWheel => {
 			if (evt.type === "wheel") {
 				return {type: "wheel", delta: evt.delta, pos: evt.pos };
-				// return {type: "wheel", 
 			} else if (evt.type === "down") {
 				mouseState[evt.value] = {pressed: true};
 				return {type: "press", button: evt.value, pos: evt.pos};
