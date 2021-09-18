@@ -6,6 +6,12 @@ export interface MouseInput {
 	pos: { x: number, y: number };
 }
 
+export interface MouseWheel {
+	type: "wheel",
+	delta: number;
+	pos: { x: number, y: number };
+}
+
 const supportedButons = [
 	1, // main
 	2, // secondary
@@ -55,12 +61,49 @@ const buttonsReleased = (buttons: number): Array<number> => {
 	return pressed;
 };
 
+interface RawMouseEvent {
+	value: number;
+	interval: number;
+	type: "move" | "down" | "up",
+	pos: {
+		x: number;
+		y: number;
+	};
+}
+
+interface RawWheelEvent {
+	interval: number;
+	value: number;
+	type: "wheel";
+	delta: number;
+	pos: {
+		x: number;
+		y: number;
+	};
+};
+
 export const mouse = (selector: string) => {
 	const elem = <HTMLElement>document.querySelector(selector);
+	const mouseWheel = Rx.Observable.fromEvent<WheelEvent>(elem, "wheel")
+		.timeInterval()
+		.flatMap(evt => {
+			const sign = Math.sign(evt.value.deltaY);
+			return [{
+				interval: evt.interval,
+				value: evt.value.button,
+				type: "wheel",
+				delta: sign,
+				pos: {
+					x: evt.value.pageX - elem.offsetLeft,
+					y: evt.value.pageY - elem.offsetTop
+				}
+			} as RawWheelEvent];
+		});
+
 	const mouseDown = Rx.Observable.fromEvent<MouseEvent>(elem, "mousedown")
 		.timeInterval()
 		.flatMap(evt => {
-			const downEvent = (button: number) => ({
+			const downEvent = (button: number): RawMouseEvent => ({
 				value: button, interval: evt.interval, type: "down",
 				pos: {
 					x: evt.value.pageX - elem.offsetLeft,
@@ -73,7 +116,7 @@ export const mouse = (selector: string) => {
 	const mouseMove = Rx.Observable.fromEvent<MouseEvent>(elem, "mousemove")
 		.timeInterval()
 		.flatMap(evt => {
-			const moveEvent = (button: number) => ({
+			const moveEvent = (button: number): RawMouseEvent => ({
 				value: button, interval: evt.interval, type: "move",
 				pos: {
 					x: evt.value.pageX - elem.offsetLeft,
@@ -92,7 +135,7 @@ export const mouse = (selector: string) => {
 	const mouseUp = Rx.Observable.fromEvent<MouseEvent>(elem, "mouseup")
 		.timeInterval()
 		.flatMap(evt => {
-			const upEvent = (button: number) => ({
+			const upEvent = (button: number): RawMouseEvent => ({
 				value: button, interval: evt.interval, type: "up",
 				pos: {
 					x: evt.value.pageX - elem.offsetLeft,
@@ -112,9 +155,12 @@ export const mouse = (selector: string) => {
 		"16": {}
 	};
 
-	const mouseExt = Rx.Observable.merge(mouseDown, mouseUp, mouseMove/*, mouseWheel*/)
-		.map((evt): MouseInput => {
-			if (evt.type === "down") {
+	const mouseExt = Rx.Observable.merge(mouseDown, mouseUp, mouseMove, mouseWheel)
+		.map((evt): MouseInput | MouseWheel => {
+			if (evt.type === "wheel") {
+				return {type: "wheel", delta: evt.delta, pos: evt.pos };
+				// return {type: "wheel", 
+			} else if (evt.type === "down") {
 				mouseState[evt.value] = {pressed: true};
 				return {type: "press", button: evt.value, pos: evt.pos};
 			} else if (evt.type === "move") {
