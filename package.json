@@ -6,11 +6,11 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-	"lint": "echo \"lint skipped\"",
+    "lint": "echo \"lint skipped\"",
     "example": "parcel examples/mouse-keyboard/index.html",
     "example-gamepad": "parcel examples/gamepad/index.html",
     "test": "echo \"Warning: no test specified\"",
-	"coverage": "echo \"Warning: no coverage specified yet\""
+    "coverage": "echo \"Warning: no coverage specified yet\""
   },
   "repository": {
     "type": "git",
@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/Spacelys/Cockpit#readme",
   "dependencies": {
-    "rxjs": "6.6.3",
+    "rxjs": "^7.0.0",
     "rxjs-compat": "6.6.3"
   },
   "devDependencies": {

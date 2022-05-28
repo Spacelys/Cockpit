@@ -1,4 +1,4 @@
-import * as Rx from "rxjs/Rx";
+import * as Rx from "rxjs";
 
 export interface KeyInput {
 	key: string;
