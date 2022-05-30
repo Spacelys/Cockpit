@@ -1,5 +1,5 @@
-import * as Rx from "rxjs/Rx";
-import { Observable } from "rxjs/Rx";
+import * as Rx from 'rxjs';
+import { Observable } from 'rxjs';
 
 export interface GamePadInput {
 	type: "button" | "axes" | "dpad";
